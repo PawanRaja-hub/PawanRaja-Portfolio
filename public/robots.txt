@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rajapavanportfolio.pages.dev/sitemap.xml
+Sitemap: https://pawanraja-portfolio.pages.dev/sitemap.xml
