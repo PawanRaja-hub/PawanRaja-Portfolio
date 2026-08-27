@@ -1,57 +1,56 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { skills } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Skills = () => {
-  return (
-    <section id="skills" className="skills section">
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="section-title">
-          <h2>Skills</h2>
-          <p>
-            Proficiency and hands-on technical competencies across Java enterprise backends,
-            microservices, cloud technologies, databases, and AI pipelines.
-          </p>
-        </div>
+  const { data } = usePortfolio();
 
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 mt-8">
-          {/* Left Column: Backend & Architecture */}
-          <div>
-            {skills.backend.map((skill, idx) => (
-              <div key={skill.name} className="progress-wrap">
-                <div className="progress-title">
-                  <span>{skill.name}</span>
-                  <span>{skill.level}%</span>
-                </div>
-                <div className="progress-bar-bg">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: idx * 0.1, ease: 'easeOut' }}
-                    className="progress-bar-fill"
-                  />
+  return (
+    <section id="skills" className="skills section light-background">
+      {/* Section Title */}
+      <div className="container section-title" data-aos="fade-up">
+        <h2>{data.skills?.title || 'Skills'}</h2>
+        <p>{data.skills?.description}</p>
+      </div>
+
+      <div className="container" data-aos="fade-up" data-aos-delay="100">
+        <div className="row skills-content skills-animation">
+          {/* Left Column */}
+          <div className="col-lg-6">
+            {data.skills?.itemsLeft?.map((skill, idx) => (
+              <div className="progress" key={idx}>
+                <span className="skill">
+                  <span>{skill.name}</span> <i className="val">{skill.level}%</i>
+                </span>
+                <div className="progress-bar-wrap">
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${skill.level}%` }}
+                    role="progressbar"
+                    aria-valuenow={skill.level}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Right Column: Databases, Tools & Cloud */}
-          <div>
-            {skills.databasesAndTools.map((skill, idx) => (
-              <div key={skill.name} className="progress-wrap">
-                <div className="progress-title">
-                  <span>{skill.name}</span>
-                  <span>{skill.level}%</span>
-                </div>
-                <div className="progress-bar-bg">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: idx * 0.1, ease: 'easeOut' }}
-                    className="progress-bar-fill"
-                  />
+          {/* Right Column */}
+          <div className="col-lg-6">
+            {data.skills?.itemsRight?.map((skill, idx) => (
+              <div className="progress" key={idx}>
+                <span className="skill">
+                  <span>{skill.name}</span> <i className="val">{skill.level}%</i>
+                </span>
+                <div className="progress-bar-wrap">
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${skill.level}%` }}
+                    role="progressbar"
+                    aria-valuenow={skill.level}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
                 </div>
               </div>
             ))}

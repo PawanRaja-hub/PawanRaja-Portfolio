@@ -1,111 +1,65 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { personalInfo, experience, education, certifications } from '../constants';
-import { FaDownload } from 'react-icons/fa';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Resume = () => {
-  return (
-    <section id="resume" className="resume section section-bg">
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="section-title">
-          <h2>Resume</h2>
-          <p>
-            Summary of professional background, enterprise work experience at TCS, academic credentials,
-            and industry-standard certifications.
-          </p>
-        </div>
+  const { data } = usePortfolio();
 
-        <div className="grid lg:grid-cols-2 gap-x-12 mt-6">
+  return (
+    <section id="resume" className="resume section">
+      {/* Section Title */}
+      <div className="container section-title" data-aos="fade-up">
+        <h2>{data.resume?.title || 'Resume'}</h2>
+        <p>{data.resume?.description}</p>
+      </div>
+
+      <div className="container">
+        <div className="row">
           {/* Left Column: Summary & Education */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Summary */}
+          <div className="col-lg-6" data-aos="fade-up" data-aos-delay="100">
             <h3 className="resume-title">Summary</h3>
-            <div className="resume-item pb-4">
-              <h4>{personalInfo.name}</h4>
-              <p className="italic text-slate-600 dark:text-slate-400 mb-3">
-                {personalInfo.bio}
+            <div className="resume-item pb-0">
+              <h4>{data.resume?.summary?.name || 'Brandon Johnson'}</h4>
+              <p>
+                <em>{data.resume?.summary?.text}</em>
               </p>
               <ul>
-                <li><strong>Location:</strong> {personalInfo.location}</li>
-                <li><strong>Phone:</strong> {personalInfo.phone}</li>
-                <li><strong>Email:</strong> {personalInfo.email}</li>
-                <li><strong>Focus:</strong> Java, Spring Boot, Spring Security, AI Integration</li>
+                {data.resume?.summary?.items?.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </div>
 
-            {/* Education */}
             <h3 className="resume-title">Education</h3>
-            {education.map((edu) => (
-              <div key={edu.id} className="resume-item">
+            {data.resume?.education?.map((edu) => (
+              <div className="resume-item" key={edu.id}>
                 <h4>{edu.degree}</h4>
                 <h5>{edu.period}</h5>
-                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                <p>
                   <em>{edu.institution}</em>
                 </p>
-                <p className="text-slate-600 dark:text-slate-400 mt-2">
-                  {edu.description}
-                </p>
+                <p>{edu.description}</p>
               </div>
             ))}
-
-            {/* Certifications Overview */}
-            <h3 className="resume-title">Credentials</h3>
-            {certifications.map((cert) => (
-              <div key={cert.id} className="resume-item">
-                <h4>{cert.name}</h4>
-                <h5>{cert.year}</h5>
-                <p className="font-semibold text-slate-800 dark:text-slate-200">
-                  <em>{cert.issuer}</em>
-                </p>
-                <span className="inline-block mt-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
-                  {cert.badge}
-                </span>
-              </div>
-            ))}
-          </motion.div>
+          </div>
 
           {/* Right Column: Professional Experience */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div className="col-lg-6" data-aos="fade-up" data-aos-delay="200">
             <h3 className="resume-title">Professional Experience</h3>
-            {experience.map((exp) => (
-              <div key={exp.id} className="resume-item">
+            {data.resume?.experience?.map((exp) => (
+              <div className="resume-item" key={exp.id}>
                 <h4>{exp.role}</h4>
                 <h5>{exp.period}</h5>
-                <p className="font-semibold text-slate-800 dark:text-slate-200">
-                  <em>{exp.company} — {exp.location}</em>
-                </p>
-                <p className="text-slate-600 dark:text-slate-400 mt-2 mb-3">
-                  {exp.description}
+                <p>
+                  <em>{exp.institution}</em>
                 </p>
                 <ul>
-                  {exp.achievements.map((achieve, i) => (
-                    <li key={i}>{achieve}</li>
+                  {exp.bullets?.map((bullet, idx) => (
+                    <li key={idx}>{bullet}</li>
                   ))}
                 </ul>
               </div>
             ))}
-
-            <div className="mt-8 pt-4">
-              <a
-                href={personalInfo.resumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-white font-semibold transition-all bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 text-sm"
-              >
-                <FaDownload /> <span>Download Complete Resume (PDF)</span>
-              </a>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

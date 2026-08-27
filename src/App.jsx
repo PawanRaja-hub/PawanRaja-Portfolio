@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -8,64 +8,23 @@ import Resume from './components/Resume';
 import Projects from './components/Projects';
 import Services from './components/Services';
 import Testimonials from './components/Testimonials';
-import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { FaBars, FaTimes, FaArrowUp } from 'react-icons/fa';
+import ScrollTop from './components/ScrollTop';
+import LiveEditor from './components/LiveEditor';
+import { usePortfolio } from './context/PortfolioContext';
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [showBackToTop, setShowBackToTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
-      setScrollProgress(progress);
-      setShowBackToTop(window.scrollY > 300);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const [headerShow, setHeaderShow] = useState(false);
+  const { setIsEditorOpen } = usePortfolio();
 
   return (
-    <div className="min-h-screen relative">
-      {/* Top scroll progress indicator */}
-      <div
-        className="fixed top-0 left-0 h-1 bg-sky-500 z-[10002] transition-all duration-100 ease-out"
-        style={{ width: `${scrollProgress}%` }}
-      />
-
-      {/* Mobile Hamburger Toggle Button (iPortfolio style) */}
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="xl:hidden fixed top-4 right-4 z-[10001] w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl shadow-lg shadow-sky-500/30 cursor-pointer border-none transition-transform hover:scale-105"
-        aria-label="Toggle Navigation"
-      >
-        {menuOpen ? <FaTimes /> : <FaBars />}
-      </button>
-
-      {/* Backdrop overlay on mobile */}
-      {menuOpen && (
-        <div
-          onClick={() => setMenuOpen(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[9996] xl:hidden"
-        />
-      )}
-
-      {/* Sidebar Navigation */}
-      <div className={`iportfolio-sidebar ${menuOpen ? 'active' : ''}`} id="sidebar-wrapper">
-        <Sidebar onClose={() => setMenuOpen(false)} />
-      </div>
+    <div className="portfolio-app">
+      {/* Header / Sidebar */}
+      <Sidebar headerShow={headerShow} setHeaderShow={setHeaderShow} />
 
       {/* Main Content Area */}
-      <main className="main-content min-h-screen">
+      <main className="main">
         <Hero />
         <About />
         <Stats />
@@ -74,20 +33,45 @@ function App() {
         <Projects />
         <Services />
         <Testimonials />
-        <Certifications />
         <Contact />
-        <Footer />
       </main>
 
-      {/* Back to top floating button */}
+      {/* Footer */}
+      <Footer />
+
+      {/* Scroll to Top Button */}
+      <ScrollTop />
+
+      {/* Floating Quick Edit Trigger Button (Bottom Left) */}
       <button
-        onClick={scrollToTop}
-        className={`back-to-top ${showBackToTop ? 'active' : ''}`}
-        aria-label="Back to Top"
-        title="Back to Top"
+        onClick={() => setIsEditorOpen(true)}
+        style={{
+          position: 'fixed',
+          left: '15px',
+          bottom: '15px',
+          zIndex: 9999,
+          background: '#040b14',
+          color: '#ffffff',
+          border: '1px solid #149ddd',
+          borderRadius: '50px',
+          padding: '8px 16px',
+          fontSize: '12px',
+          fontWeight: 600,
+          cursor: 'pointer',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'all 0.3s',
+        }}
+        title="Open Live Portfolio Details Editor"
       >
-        <FaArrowUp />
+        <i className="bi bi-gear-fill" style={{ color: '#149ddd', fontSize: '14px' }}></i>
+        <span>Edit Portfolio Data</span>
       </button>
+
+      {/* Live Data Editor Drawer */}
+      <LiveEditor />
     </div>
   );
 }

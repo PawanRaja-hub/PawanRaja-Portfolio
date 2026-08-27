@@ -1,71 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { personalInfo, navLinks } from '../constants';
-import {
-  FaHome,
-  FaUser,
-  FaFileAlt,
-  FaImages,
-  FaServer,
-  FaQuoteRight,
-  FaAward,
-  FaEnvelope,
-  FaLinkedinIn,
-  FaGithub,
-  FaBriefcase,
-  FaTwitter,
-  FaMoon,
-  FaSun,
-  FaDownload,
-} from 'react-icons/fa';
+import { usePortfolio } from '../context/PortfolioContext';
 
-const iconMap = {
-  house: <FaHome />,
-  person: <FaUser />,
-  'file-earmark-text': <FaFileAlt />,
-  images: <FaImages />,
-  'hdd-stack': <FaServer />,
-  'chat-quote': <FaQuoteRight />,
-  award: <FaAward />,
-  envelope: <FaEnvelope />,
-};
+const Sidebar = ({ headerShow, setHeaderShow }) => {
+  const { data, setIsEditorOpen } = usePortfolio();
+  const [activeSection, setActiveSection] = useState('hero');
 
-const Sidebar = ({ onClose }) => {
-  const [active, setActive] = useState('hero');
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') || 'light';
-    }
-    return 'light';
-  });
-
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    try {
-      localStorage.setItem('theme', theme);
-    } catch (e) {
-      // ignore
-    }
-  }, [theme]);
-
-  // Scrollspy to detect active section
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navLinks.map((link) => link.id);
+      const sections = ['hero', 'about', 'resume', 'portfolio', 'services', 'testimonials', 'contact'];
       const scrollPos = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section) {
-          const top = section.offsetTop;
-          const height = section.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActive(sections[i]);
-            break;
-          }
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(sections[i]);
+          break;
         }
       }
     };
@@ -75,135 +24,102 @@ const Sidebar = ({ onClose }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
-
-  const handleNavClick = (e, id) => {
-    e.preventDefault();
-    const target = document.getElementById(id);
-    if (target) {
-      const top = target.offsetTop;
-      window.scrollTo({ top, behavior: 'smooth' });
-      if (onClose) onClose();
-    }
-  };
+  const navItems = [
+    { id: 'hero', label: 'Home', icon: 'bi-house' },
+    { id: 'about', label: 'About', icon: 'bi-person' },
+    { id: 'resume', label: 'Resume', icon: 'bi-file-earmark-text' },
+    { id: 'portfolio', label: 'Portfolio', icon: 'bi-images' },
+    { id: 'services', label: 'Services', icon: 'bi-hdd-stack' },
+    { id: 'testimonials', label: 'Testimonials', icon: 'bi-chat-quote' },
+    { id: 'contact', label: 'Contact', icon: 'bi-envelope' },
+  ];
 
   return (
-    <header className="iportfolio-sidebar" id="header">
-      <div>
-        {/* Profile Image */}
-        <div className="profile-img">
-          <img
-            src={personalInfo.photo}
-            alt={personalInfo.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              if (e.target.parentElement) {
-                e.target.parentElement.innerHTML = `<div style="width:100%;height:100%;background:linear-gradient(135deg,#149ddd,#0563bb);display:flex;align-items:center;justify-content:center;color:white;font-size:36px;font-weight:700;font-family:Raleway">${personalInfo.initials}</div>`;
-              }
-            }}
-          />
-        </div>
+    <header
+      id="header"
+      className={`header dark-background d-flex flex-column ${headerShow ? 'header-show' : ''}`}
+    >
+      <i
+        className={`header-toggle d-xl-none bi ${headerShow ? 'bi-x' : 'bi-list'}`}
+        onClick={() => setHeaderShow(!headerShow)}
+        style={{ cursor: 'pointer' }}
+      ></i>
 
-        {/* Sitename */}
-        <h1 className="sitename">
-          <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')}>
-            {personalInfo.shortName}
-          </a>
-        </h1>
-
-        {/* Social Links */}
-        <div className="social-links text-center mb-4">
-          <a
-            href={personalInfo.socialLinks.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="LinkedIn"
-            title="LinkedIn"
-          >
-            <FaLinkedinIn />
-          </a>
-          <a
-            href={personalInfo.socialLinks.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="GitHub"
-            title="GitHub"
-          >
-            <FaGithub />
-          </a>
-          <a
-            href={personalInfo.socialLinks.naukri}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Naukri"
-            title="Naukri Profile"
-          >
-            <FaBriefcase />
-          </a>
-          <a
-            href={personalInfo.socialLinks.email}
-            aria-label="Email"
-            title="Send Email"
-          >
-            <FaEnvelope />
-          </a>
-        </div>
-
-        {/* Navmenu */}
-        <nav id="navmenu" className="navmenu">
-          <ul>
-            {navLinks.map((link) => {
-              const isActive = active === link.id;
-              return (
-                <li key={link.id}>
-                  <a
-                    href={`#${link.id}`}
-                    onClick={(e) => handleNavClick(e, link.id)}
-                    className={isActive ? 'active' : ''}
-                  >
-                    <span>{iconMap[link.icon] || <FaHome />}</span>
-                    <span>{link.label}</span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+      <div className="profile-img">
+        <img
+          src={data.personal.avatar || '/pawan-photo.jpg'}
+          alt={data.personal.sitename || 'Profile'}
+          className="img-fluid rounded-circle"
+          onError={(e) => {
+            e.target.src = 'https://themewagon.github.io/iPortfolio/assets/img/my-profile-img.jpg';
+          }}
+        />
       </div>
 
-      {/* Sidebar Footer Controls */}
-      <div className="mt-8 pt-4 border-t border-slate-800 text-center">
-        <div className="flex gap-2 mb-3">
-          <button
-            onClick={toggleTheme}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-700 text-slate-200 transition-all"
-            title="Toggle theme"
-          >
-            {theme === 'light' ? (
-              <>
-                <FaMoon className="text-sky-400" /> <span>Dark</span>
-              </>
-            ) : (
-              <>
-                <FaSun className="text-amber-400" /> <span>Light</span>
-              </>
-            )}
-          </button>
+      <a href="#hero" className="logo d-flex align-items-center justify-content-center">
+        <h1 className="sitename">{data.personal.sitename || 'Alex Smith'}</h1>
+      </a>
 
-          <a
-            href={personalInfo.resumeUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition-all shadow-md shadow-sky-600/30"
-          >
-            <FaDownload /> <span>Resume</span>
+      <div className="social-links text-center">
+        {data.personal.socialLinks?.twitter && (
+          <a href={data.personal.socialLinks.twitter} target="_blank" rel="noreferrer" className="twitter" aria-label="Twitter">
+            <i className="bi bi-twitter-x"></i>
           </a>
-        </div>
+        )}
+        {data.personal.socialLinks?.facebook && (
+          <a href={data.personal.socialLinks.facebook} target="_blank" rel="noreferrer" className="facebook" aria-label="Facebook">
+            <i className="bi bi-facebook"></i>
+          </a>
+        )}
+        {data.personal.socialLinks?.instagram && (
+          <a href={data.personal.socialLinks.instagram} target="_blank" rel="noreferrer" className="instagram" aria-label="Instagram">
+            <i className="bi bi-instagram"></i>
+          </a>
+        )}
+        {data.personal.socialLinks?.linkedin && (
+          <a href={data.personal.socialLinks.linkedin} target="_blank" rel="noreferrer" className="linkedin" aria-label="LinkedIn">
+            <i className="bi bi-linkedin"></i>
+          </a>
+        )}
+        {data.personal.socialLinks?.github && (
+          <a href={data.personal.socialLinks.github} target="_blank" rel="noreferrer" className="github" aria-label="GitHub">
+            <i className="bi bi-github"></i>
+          </a>
+        )}
+      </div>
 
-        <p className="text-[11px] text-slate-400 m-0">
-          © {new Date().getFullYear()} <strong className="text-slate-200">{personalInfo.shortName}</strong>
-        </p>
+      <nav id="navmenu" className="navmenu">
+        <ul>
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={activeSection === item.id ? 'active' : ''}
+                onClick={() => setHeaderShow(false)}
+              >
+                <i className={`bi ${item.icon} navicon`}></i>
+                <span>{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Live edit button inside sidebar */}
+      <div className="mt-auto pb-3 text-center">
+        <button
+          onClick={() => setIsEditorOpen(true)}
+          className="btn btn-sm btn-outline-info text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+          style={{
+            fontSize: '13px',
+            borderRadius: '50px',
+            borderColor: '#149ddd',
+            background: 'rgba(20, 157, 221, 0.15)',
+          }}
+        >
+          <i className="bi bi-pencil-square"></i>
+          <span>Edit Portfolio Details</span>
+        </button>
       </div>
     </header>
   );
