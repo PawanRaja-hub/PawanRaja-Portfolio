@@ -1,169 +1,111 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { experience, education } from '../constants';
+import { personalInfo, experience, education, certifications } from '../constants';
 import { FaDownload } from 'react-icons/fa';
-import { personalInfo } from '../constants';
 
 const Resume = () => {
   return (
-    <section id="resume" className="section section-bg">
-      <div className="max-w-6xl mx-auto px-8">
+    <section id="resume" className="resume section section-bg">
+      <div className="max-w-6xl mx-auto px-6 md:px-10">
         <div className="section-title">
           <h2>Resume</h2>
-          <p>My professional journey and educational background.</p>
+          <p>
+            Summary of professional background, enterprise work experience at TCS, academic credentials,
+            and industry-standard certifications.
+          </p>
         </div>
 
-        <div className="text-center mb-12">
-          <a
-            href={personalInfo.resumeUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold transition-all"
-            style={{
-              background: 'var(--accent-color)',
-              fontFamily: 'Raleway, sans-serif',
-              boxShadow: '0 4px 15px rgba(5, 99, 187, 0.3)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--accent-hover)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'var(--accent-color)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+        <div className="grid lg:grid-cols-2 gap-x-12 mt-6">
+          {/* Left Column: Summary & Education */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <FaDownload /> Download Full Resume
-          </a>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Professional Experience */}
-          <div>
-            <h3
-              className="text-2xl font-bold mb-6 flex items-center gap-3"
-              style={{ color: 'var(--heading-color)', fontFamily: 'Raleway, sans-serif' }}
-            >
-              <span style={{ color: 'var(--accent-color)' }}>💼</span> Professional Experience
-            </h3>
-
-            {experience.map((exp, idx) => (
-              <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="premium-card mb-6"
-                style={{ position: 'relative', paddingLeft: '20px', borderLeft: '3px solid var(--accent-color)' }}
-              >
-                <h4
-                  className="text-lg font-bold"
-                  style={{ color: 'var(--heading-color)' }}
-                >
-                  {exp.role}
-                </h4>
-                <h5
-                  className="font-semibold mt-1"
-                  style={{ color: 'var(--accent-color)', fontFamily: 'Raleway, sans-serif' }}
-                >
-                  {exp.company}
-                </h5>
-                <p
-                  className="text-xs uppercase tracking-wide mt-2 mb-3"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {exp.period} • {exp.location}
-                </p>
-                <p
-                  className="text-sm mb-3"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {exp.description}
-                </p>
-                <ul className="space-y-1 list-none p-0">
-                  {exp.achievements.map((a, i) => (
-                    <li
-                      key={i}
-                      className="text-sm flex items-start gap-2"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      <span style={{ color: 'var(--accent-color)' }}>▸</span>
-                      <span>{a}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Education */}
-          <div>
-            <h3
-              className="text-2xl font-bold mb-6 flex items-center gap-3"
-              style={{ color: 'var(--heading-color)', fontFamily: 'Raleway, sans-serif' }}
-            >
-              <span style={{ color: 'var(--accent-color)' }}>🎓</span> Education
-            </h3>
-
-            {education.map((edu, idx) => (
-              <motion.div
-                key={edu.id}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="premium-card"
-                style={{ position: 'relative', paddingLeft: '20px', borderLeft: '3px solid var(--accent-color)' }}
-              >
-                <h4
-                  className="text-lg font-bold"
-                  style={{ color: 'var(--heading-color)' }}
-                >
-                  {edu.degree}
-                </h4>
-                <h5
-                  className="font-semibold mt-1"
-                  style={{ color: 'var(--accent-color)' }}
-                >
-                  {edu.field}
-                </h5>
-                <p
-                  className="text-xs uppercase tracking-wide mt-2"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {edu.institution} • {edu.period}
-                </p>
-                <p
-                  className="text-sm mt-3"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {edu.description}
-                </p>
-              </motion.div>
-            ))}
-
-            {/* Certifications also in resume section */}
-            <h3
-              className="text-2xl font-bold mb-6 mt-8 flex items-center gap-3"
-              style={{ color: 'var(--heading-color)', fontFamily: 'Raleway, sans-serif' }}
-            >
-              <span style={{ color: 'var(--accent-color)' }}>🏆</span> Certifications
-            </h3>
-            <div className="premium-card">
-              <ul className="space-y-3 list-none p-0">
-                <li>
-                  <strong style={{ color: 'var(--heading-color)' }}>Claude Certified Architect</strong> – Foundations (Anthropic, 2024)
-                </li>
-                <li>
-                  <strong style={{ color: 'var(--heading-color)' }}>Oracle Certified Professional Java SE 8</strong> (Oracle, 2024)
-                </li>
-                <li>
-                  <strong style={{ color: 'var(--heading-color)' }}>Microsoft Azure Security Engineer Associate</strong> (Microsoft, 2024)
-                </li>
+            {/* Summary */}
+            <h3 className="resume-title">Summary</h3>
+            <div className="resume-item pb-4">
+              <h4>{personalInfo.name}</h4>
+              <p className="italic text-slate-600 dark:text-slate-400 mb-3">
+                {personalInfo.bio}
+              </p>
+              <ul>
+                <li><strong>Location:</strong> {personalInfo.location}</li>
+                <li><strong>Phone:</strong> {personalInfo.phone}</li>
+                <li><strong>Email:</strong> {personalInfo.email}</li>
+                <li><strong>Focus:</strong> Java, Spring Boot, Spring Security, AI Integration</li>
               </ul>
             </div>
-          </div>
+
+            {/* Education */}
+            <h3 className="resume-title">Education</h3>
+            {education.map((edu) => (
+              <div key={edu.id} className="resume-item">
+                <h4>{edu.degree}</h4>
+                <h5>{edu.period}</h5>
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  <em>{edu.institution}</em>
+                </p>
+                <p className="text-slate-600 dark:text-slate-400 mt-2">
+                  {edu.description}
+                </p>
+              </div>
+            ))}
+
+            {/* Certifications Overview */}
+            <h3 className="resume-title">Credentials</h3>
+            {certifications.map((cert) => (
+              <div key={cert.id} className="resume-item">
+                <h4>{cert.name}</h4>
+                <h5>{cert.year}</h5>
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  <em>{cert.issuer}</em>
+                </p>
+                <span className="inline-block mt-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
+                  {cert.badge}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Right Column: Professional Experience */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h3 className="resume-title">Professional Experience</h3>
+            {experience.map((exp) => (
+              <div key={exp.id} className="resume-item">
+                <h4>{exp.role}</h4>
+                <h5>{exp.period}</h5>
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  <em>{exp.company} — {exp.location}</em>
+                </p>
+                <p className="text-slate-600 dark:text-slate-400 mt-2 mb-3">
+                  {exp.description}
+                </p>
+                <ul>
+                  {exp.achievements.map((achieve, i) => (
+                    <li key={i}>{achieve}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            <div className="mt-8 pt-4">
+              <a
+                href={personalInfo.resumeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-white font-semibold transition-all bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 text-sm"
+              >
+                <FaDownload /> <span>Download Complete Resume (PDF)</span>
+              </a>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

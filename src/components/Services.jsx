@@ -1,50 +1,48 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { services } from '../constants';
+import { FaServer, FaShieldAlt, FaBrain, FaDatabase, FaLayerGroup, FaCloud } from 'react-icons/fa';
+
+const iconMap = {
+  server: <FaServer />,
+  shield: <FaShieldAlt />,
+  cpu: <FaBrain />,
+  database: <FaDatabase />,
+  layers: <FaLayerGroup />,
+  cloud: <FaCloud />,
+};
 
 const Services = () => {
   return (
-    <section id="services" className="section section-bg">
-      <div className="max-w-6xl mx-auto px-8">
+    <section id="services" className="services section section-bg">
+      <div className="max-w-6xl mx-auto px-6 md:px-10">
         <div className="section-title">
           <h2>Services</h2>
-          <p>What I can bring to your team or project.</p>
+          <p>
+            Specialized engineering capabilities offered for product companies, enterprise systems,
+            and scalable backend architectures.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
           {services.map((service, idx) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="premium-card text-center"
+              transition={{ duration: 0.4, delay: idx * 0.08 }}
+              className="service-card"
             >
-              <div className="mb-4 flex justify-center">
-                <div
-                  className="flex items-center justify-center"
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '50%',
-                    background: 'var(--bg-secondary)',
-                    fontSize: '36px',
-                  }}
-                >
-                  {service.icon}
-                </div>
+              <div className="service-icon">
+                {iconMap[service.icon] || <FaServer />}
               </div>
-              <h4
-                className="text-lg font-bold mb-3"
-                style={{ color: 'var(--heading-color)', fontFamily: 'Raleway, sans-serif' }}
-              >
+
+              <h3 className="text-xl font-bold mb-3 text-slate-800 dark:text-slate-100 font-['Raleway']">
                 {service.title}
-              </h4>
-              <p
-                className="text-sm leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
-              >
+              </h3>
+
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0">
                 {service.description}
               </p>
             </motion.div>

@@ -7,118 +7,65 @@ import Skills from './components/Skills';
 import Resume from './components/Resume';
 import Projects from './components/Projects';
 import Services from './components/Services';
+import Testimonials from './components/Testimonials';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaTimes, FaArrowUp } from 'react-icons/fa';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const total = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
       setScrollProgress(progress);
+      setShowBackToTop(window.scrollY > 300);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menu on link click
-  useEffect(() => {
-    const closeMenu = () => setMenuOpen(false);
-    const links = document.querySelectorAll('#nav-menu a');
-    links.forEach((link) => link.addEventListener('click', closeMenu));
-    return () => links.forEach((link) => link.removeEventListener('click', closeMenu));
-  }, []);
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      {/* Progress bar */}
+    <div className="min-h-screen relative">
+      {/* Top scroll progress indicator */}
       <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '3px',
-          background: 'var(--accent-color)',
-          width: `${scrollProgress}%`,
-          zIndex: 10002,
-          transition: 'width 0.1s ease',
-        }}
+        className="fixed top-0 left-0 h-1 bg-sky-500 z-[10002] transition-all duration-100 ease-out"
+        style={{ width: `${scrollProgress}%` }}
       />
 
-      {/* Mobile hamburger */}
+      {/* Mobile Hamburger Toggle Button (iPortfolio style) */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        style={{
-          position: 'fixed',
-          top: '15px',
-          left: '15px',
-          zIndex: 10001,
-          background: 'var(--accent-color)',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          padding: '10px 12px',
-          cursor: 'pointer',
-          fontSize: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px',
-        }}
-        aria-label="Toggle menu"
+        className="xl:hidden fixed top-4 right-4 z-[10001] w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl shadow-lg shadow-sky-500/30 cursor-pointer border-none transition-transform hover:scale-105"
+        aria-label="Toggle Navigation"
       >
-        {menuOpen ? (
-          <span style={{ fontSize: '20px', lineHeight: 1 }}>✕</span>
-        ) : (
-          <>
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
-            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
-          </>
-        )}
+        {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Overlay for mobile */}
+      {/* Backdrop overlay on mobile */}
       {menuOpen && (
         <div
           onClick={() => setMenuOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 9996,
-          }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[9996] xl:hidden"
         />
       )}
 
-      {/* Sidebar */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: menuOpen ? 0 : '-300px',
-          bottom: 0,
-          width: '300px',
-          zIndex: 9997,
-          transition: 'left 0.3s ease',
-        }}
-        id="nav-menu"
-      >
-        <Sidebar />
+      {/* Sidebar Navigation */}
+      <div className={`iportfolio-sidebar ${menuOpen ? 'active' : ''}`} id="sidebar-wrapper">
+        <Sidebar onClose={() => setMenuOpen(false)} />
       </div>
 
-      {/* Main content */}
-      <main
-        style={{
-          marginLeft: '300px',
-          minHeight: '100vh',
-          transition: 'margin-left 0.3s ease',
-        }}
-      >
+      {/* Main Content Area */}
+      <main className="main-content min-h-screen">
         <Hero />
         <About />
         <Stats />
@@ -126,18 +73,21 @@ function App() {
         <Resume />
         <Projects />
         <Services />
+        <Testimonials />
         <Certifications />
         <Contact />
         <Footer />
       </main>
 
-      <style>{`
-        @media (max-width: 1199px) {
-          main {
-            margin-left: 0 !important;
-          }
-        }
-      `}</style>
+      {/* Back to top floating button */}
+      <button
+        onClick={scrollToTop}
+        className={`back-to-top ${showBackToTop ? 'active' : ''}`}
+        aria-label="Back to Top"
+        title="Back to Top"
+      >
+        <FaArrowUp />
+      </button>
     </div>
   );
 }

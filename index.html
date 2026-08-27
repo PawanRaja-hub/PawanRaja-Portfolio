@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#040b14" />
     <meta name="description" content="Venkata Raja Pavan Kumar Reddy — AI-Native Java Backend Engineer with 2+ years experience. Building scalable Spring Boot systems, REST APIs, and AI-integrated backends." />
     <meta name="keywords" content="Java Backend Engineer, Spring Boot Developer, AI Integration, REST APIs, Backend Developer, Pune, TCS, Hire Java Developer" />
     <meta name="author" content="Venkata Raja Pavan Kumar Reddy" />
@@ -13,59 +13,27 @@
     <meta property="og:description" content="AI-Native Java Backend Engineer with 2+ years of experience building scalable Spring Boot systems, REST APIs, and AI-integrated backends." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pawanraja-portfolio.rajapawanvalila.workers.dev" />
-    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image" content="/pawan-photo.jpg" />
     <meta property="og:site_name" content="Venkata Raja Pavan Kumar Reddy Portfolio" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Venkata Raja Pavan Kumar Reddy | AI-Native Java Backend Engineer" />
     <meta name="twitter:description" content="AI-Native Java Backend Engineer with 2+ years of experience building scalable Spring Boot systems, REST APIs, and AI-integrated backends." />
-    <meta name="twitter:image" content="/og-image.png" />
+    <meta name="twitter:image" content="/pawan-photo.jpg" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fonts -->
+    <!-- Google Fonts for iPortfolio: Raleway, Poppins, Open Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet" />
 
-    <title>Venkata Raja Pavan Kumar Reddy | AI-Native Java Backend Engineer</title>
-
-    <style>
-      /* Critical CSS for fast first paint */
-      body { margin: 0; font-family: 'Open Sans', system-ui, sans-serif; background: #fff; color: #272829; }
-      .nav-toggle { display: none; }
-      @media (max-width: 1199px) { .nav-toggle { display: block; } }
-    </style>
+    <title>Venkata Raja Pavan Kumar Reddy | Portfolio</title>
   </head>
-  <body>
-    <!-- Mobile nav toggle button -->
-    <button class="nav-toggle" type="button" aria-label="Toggle navigation" style="position:fixed;top:15px;left:15px;z-index:10001;background:#0563bb;color:#fff;border:none;border-radius:4px;padding:10px 12px;cursor:pointer;font-size:20px;display:none;">
-      <span style="display:block;width:22px;height:2px;background:#fff;margin:4px 0;"></span>
-      <span style="display:block;width:22px;height:2px;background:#fff;margin:4px 0;"></span>
-      <span style="display:block;width:22px;height:2px;background:#fff;margin:4px 0;"></span>
-    </button>
-
+  <body class="index-page">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      // Mobile nav toggle
-      document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.querySelector('.nav-toggle');
-        var nav = document.getElementById('nav-menu');
-        if (btn && nav) {
-          btn.addEventListener('click', function() {
-            nav.classList.toggle('active');
-          });
-          // Close on link click
-          nav.querySelectorAll('a').forEach(function(a) {
-            a.addEventListener('click', function() {
-              nav.classList.remove('active');
-            });
-          });
-        }
-      });
-    </script>
   </body>
 </html>

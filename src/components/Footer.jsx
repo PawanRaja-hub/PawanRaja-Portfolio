@@ -1,45 +1,27 @@
 import React from 'react';
 import { personalInfo } from '../constants';
-import { FaLinkedin, FaGithub, FaBriefcase, FaEnvelope } from 'react-icons/fa';
+import { FaLinkedinIn, FaGithub, FaBriefcase, FaEnvelope, FaHeart } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer
-      className="py-8 text-center"
-      style={{
-        background: '#0a192f',
-        color: 'rgba(255,255,255,0.6)',
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-8">
-        <div className="flex justify-center gap-4 mb-6">
+    <footer className="py-10 text-center bg-[#040b14] text-slate-400 border-t border-slate-800">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex justify-center gap-3 mb-6">
           <a
             href={personalInfo.socialLinks.linkedin}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center transition-all hover:-translate-y-1"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.3)',
-              color: 'rgba(255,255,255,0.6)',
-            }}
+            className="w-10 h-10 rounded-full bg-slate-800/80 hover:bg-sky-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+            aria-label="LinkedIn"
           >
-            <FaLinkedin />
+            <FaLinkedinIn />
           </a>
           <a
             href={personalInfo.socialLinks.github}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center transition-all hover:-translate-y-1"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.3)',
-              color: 'rgba(255,255,255,0.6)',
-            }}
+            className="w-10 h-10 rounded-full bg-slate-800/80 hover:bg-sky-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+            aria-label="GitHub"
           >
             <FaGithub />
           </a>
@@ -47,37 +29,28 @@ const Footer = () => {
             href={personalInfo.socialLinks.naukri}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center transition-all hover:-translate-y-1"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.3)',
-              color: 'rgba(255,255,255,0.6)',
-            }}
+            className="w-10 h-10 rounded-full bg-slate-800/80 hover:bg-sky-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+            aria-label="Naukri"
           >
             <FaBriefcase />
           </a>
           <a
             href={personalInfo.socialLinks.email}
-            className="flex items-center justify-center transition-all hover:-translate-y-1"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.3)',
-              color: 'rgba(255,255,255,0.6)',
-            }}
+            className="w-10 h-10 rounded-full bg-slate-800/80 hover:bg-sky-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+            aria-label="Email"
           >
             <FaEnvelope />
           </a>
         </div>
 
-        <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          © {new Date().getFullYear()} <span style={{ color: 'rgba(255,255,255,0.8)' }}>{personalInfo.shortName}</span>. All rights reserved.
+        <p className="text-sm mb-2 text-slate-400 font-['Poppins']">
+          © {new Date().getFullYear()} <strong className="text-slate-200">{personalInfo.name}</strong>. All Rights Reserved.
         </p>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          Built with React, Tailwind CSS & Framer Motion • Deployed on Cloudflare Pages
+
+        <p className="text-xs text-slate-500 flex items-center justify-center gap-1.5">
+          <span>Crafted with</span>
+          <FaHeart className="text-rose-500 text-[10px]" />
+          <span>using React, Tailwind CSS &amp; iPortfolio Design Aesthetics</span>
         </p>
       </div>
     </footer>

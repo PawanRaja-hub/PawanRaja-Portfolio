@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { personalInfo } from '../constants';
+import { FaArrowRight, FaDownload } from 'react-icons/fa';
 
 const roles = [
   'Java Backend Engineer',
   'Spring Boot Developer',
-  'AI Integrator',
-  'REST API Architect',
+  'AI-Native Architect',
+  'REST API Specialist',
   'Microservices Builder',
 ];
 
@@ -19,122 +21,83 @@ const Hero = () => {
     let timeout;
 
     if (!isDeleting && displayed === current) {
-      timeout = setTimeout(() => setIsDeleting(true), 2000);
+      timeout = setTimeout(() => setIsDeleting(true), 2200);
     } else if (isDeleting && displayed === '') {
       timeout = setTimeout(() => {
         setIsDeleting(false);
         setRoleIndex((prev) => (prev + 1) % roles.length);
-      }, 500);
+      }, 400);
     } else if (isDeleting) {
       timeout = setTimeout(() => {
         setDisplayed((prev) => prev.slice(0, -1));
-      }, 50);
+      }, 40);
     } else {
       timeout = setTimeout(() => {
         setDisplayed((prev) => current.slice(0, prev.length + 1));
-      }, 100);
+      }, 80);
     }
 
     return () => clearTimeout(timeout);
   }, [displayed, isDeleting, roleIndex]);
 
   return (
-    <section
-      id="hero"
-      className="min-h-screen flex items-center justify-center relative"
-      style={{
-        background: 'linear-gradient(135deg, #f5f8fc 0%, #e8eef7 100%)',
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-8 py-20 w-full">
+    <section id="hero" className="hero">
+      <div className="hero-content">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
         >
-          <h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4"
-            style={{
-              fontFamily: 'Raleway, sans-serif',
-              color: 'var(--heading-color)',
-              lineHeight: 1.2,
-            }}
-          >
-            Venkata Raja Pavan
-            <br />
-            <span style={{ color: 'var(--accent-color)' }}>Kumar Reddy Valila</span>
-          </h1>
+          <span className="inline-block py-1 px-3 rounded-full text-xs font-semibold tracking-wider text-sky-400 bg-sky-950/60 border border-sky-800/60 mb-4 uppercase">
+            {personalInfo.title}
+          </span>
 
-          <p
-            className="text-xl md:text-2xl mt-4 font-medium"
-            style={{
-              fontFamily: 'Raleway, sans-serif',
-              color: 'var(--heading-color)',
-            }}
-          >
-            I'm a <span style={{ color: 'var(--accent-color)' }}>{displayed}</span>
-            <span className="typed-cursor"></span>
+          <h2>{personalInfo.name}</h2>
+
+          <p>
+            I'm <span className="typed-text">{displayed}</span>
+            <span className="typed-cursor" />
           </p>
 
-          <p
-            className="text-base md:text-lg mt-6 max-w-2xl"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            Building scalable Java backend systems with Spring Boot while integrating AI into real-world applications.
+          <p className="text-slate-300 text-base md:text-lg max-w-2xl mt-4 font-normal leading-relaxed">
+            {personalInfo.tagline}
           </p>
 
           <div className="flex flex-wrap gap-4 mt-8">
             <a
-              href="#contact"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-white font-semibold transition-all"
-              style={{
-                background: 'var(--accent-color)',
-                fontFamily: 'Raleway, sans-serif',
-                fontSize: '15px',
-                boxShadow: '0 4px 15px rgba(5, 99, 187, 0.3)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--accent-hover)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--accent-color)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              href="#about"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-white font-semibold transition-all bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:-translate-y-0.5 text-sm"
             >
-              Hire Me
+              <span>Learn More</span>
+              <FaArrowRight className="text-xs" />
             </a>
+
             <a
-              href="#projects"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold transition-all"
-              style={{
-                background: 'transparent',
-                color: 'var(--heading-color)',
-                border: '2px solid var(--accent-color)',
-                fontFamily: 'Raleway, sans-serif',
-                fontSize: '15px',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--accent-color)';
-                e.currentTarget.style.color = '#fff';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.color = 'var(--heading-color)';
-              }}
+              href="#contact"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold transition-all border-2 border-sky-400/80 text-sky-300 hover:bg-sky-500 hover:text-white hover:border-sky-500 text-sm hover:-translate-y-0.5"
             >
-              View Portfolio
+              <span>Get In Touch</span>
+            </a>
+
+            <a
+              href={personalInfo.resumeUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold transition-all bg-slate-800/80 text-slate-200 hover:bg-slate-700 text-sm hover:-translate-y-0.5 border border-slate-700"
+            >
+              <FaDownload className="text-xs text-sky-400" />
+              <span>Resume</span>
             </a>
           </div>
         </motion.div>
       </div>
 
-      {/* Background decorations */}
+      {/* Decorative Glow Elements */}
       <div
-        className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-20"
+        className="absolute top-1/4 right-10 w-96 h-96 rounded-full pointer-events-none opacity-20"
         style={{
-          background: 'radial-gradient(circle, var(--accent-color) 0%, transparent 70%)',
-          filter: 'blur(40px)',
+          background: 'radial-gradient(circle, #149ddd 0%, transparent 70%)',
+          filter: 'blur(60px)',
         }}
       />
     </section>
