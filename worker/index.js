@@ -397,6 +397,11 @@ export default {
       return Response.redirect(`${url.origin}/admin.html`, 302);
     }
 
+    // 8. Serve Static Assets (React app, admin.html, images, CSS, JS)
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
+
     return jsonResponse({ error: "Endpoint not found" }, 404);
   },
 };
