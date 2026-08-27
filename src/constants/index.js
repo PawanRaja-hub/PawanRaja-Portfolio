@@ -188,7 +188,7 @@ export const certifications = [
 export const seoConfig = {
   title: 'Venkata Raja Pavan Kumar Reddy | AI-Native Java Backend Engineer',
   description: 'AI-Native Java Backend Engineer with 2+ years experience building scalable Spring Boot systems, REST APIs, and AI-integrated backends. Open to high-impact product engineering roles.',
-  url: 'https://yourusername.github.io',
+  url: 'https://pawanraja-portfolio.pages.dev',
   image: '/og-image.png',
   twitterHandle: '@yourhandle',
   siteName: 'Venkata Raja Pavan Kumar Reddy Portfolio',
