@@ -29,7 +29,7 @@ const iconMap = {
   envelope: <FaEnvelope />,
 };
 
-const Sidebar = ({ onClose }) => {
+const Sidebar = ({ isOpen, onClose }) => {
   const [active, setActive] = useState('hero');
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -88,7 +88,7 @@ const Sidebar = ({ onClose }) => {
   };
 
   return (
-    <header className="iportfolio-sidebar" id="header">
+    <header className={`iportfolio-sidebar ${isOpen ? 'active' : ''}`} id="header">
       <div>
         {/* Profile Image */}
         <div className="profile-img">

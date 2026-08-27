@@ -60,9 +60,7 @@ function App() {
       )}
 
       {/* Sidebar Navigation */}
-      <div className={`iportfolio-sidebar ${menuOpen ? 'active' : ''}`} id="sidebar-wrapper">
-        <Sidebar onClose={() => setMenuOpen(false)} />
-      </div>
+      <Sidebar isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Main Content Area */}
       <main className="main-content min-h-screen">
