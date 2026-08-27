@@ -1,165 +1,262 @@
 import React, { useState } from 'react';
-import { usePortfolio } from '../context/PortfolioContext';
+import { motion } from 'framer-motion';
+import { personalInfo } from '../constants';
+import {
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaLinkedinIn,
+  FaCopy,
+  FaCheck,
+  FaPaperPlane,
+} from 'react-icons/fa';
 
 const Contact = () => {
-  const { data } = usePortfolio();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
-  const [status, setStatus] = useState({ state: 'idle', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState({ state: 'idle', msg: '' });
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ state: 'error', message: 'Please fill in all required fields.' });
+      setStatus({ state: 'error', msg: 'Please complete all required fields.' });
       return;
     }
 
-    setStatus({ state: 'loading', message: 'Sending message...' });
+    setStatus({ state: 'loading', msg: 'Sending message...' });
+
+    const mailtoLink = `mailto:${personalInfo.email}?subject=${encodeURIComponent(
+      formData.subject || `Portfolio Contact from ${formData.name}`
+    )}&body=${encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+    )}`;
 
     setTimeout(() => {
-      setStatus({ state: 'success', message: 'Your message has been sent. Thank you!' });
-      window.open(
-        `mailto:${data.contact?.email || 'rajapawanvalila@gmail.com'}?subject=${encodeURIComponent(
-          formData.subject || 'Portfolio Inquiry'
-        )}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`)}`
-      );
+      window.location.href = mailtoLink;
+      setStatus({ state: 'success', msg: 'Email client opened! Thank you for reaching out.' });
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 600);
+    }, 500);
+  };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(personalInfo.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy');
+    }
   };
 
   return (
     <section id="contact" className="contact section">
-      {/* Section Title */}
-      <div className="container section-title" data-aos="fade-up">
-        <h2>{data.contact?.title || 'Contact'}</h2>
-        <p>{data.contact?.description}</p>
-      </div>
+      <div className="max-w-6xl mx-auto px-6 md:px-10">
+        <div className="section-title">
+          <h2>Contact</h2>
+          <p>
+            Get in touch for Java Backend Engineer opportunities, contract projects, or AI integration consulting.
+          </p>
+        </div>
 
-      <div className="container" data-aos="fade-up" data-aos-delay="100">
-        <div className="row gy-4">
-          {/* Left Column: Info Wrap */}
-          <div className="col-lg-5">
-            <div className="info-wrap">
-              <div className="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                <i className="bi bi-geo-alt flex-shrink-0"></i>
+        <div className="grid lg:grid-cols-12 gap-8 md:gap-12 mt-6">
+          {/* Left Column: Contact Info Cards */}
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              {/* Location Card */}
+              <div className="contact-info-box">
+                <div className="contact-icon">
+                  <FaMapMarkerAlt />
+                </div>
                 <div>
-                  <h3>Address</h3>
-                  <p>{data.contact?.address || 'A108 Adam Street, New York, NY 535022'}</p>
+                  <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 font-['Raleway'] mb-1">
+                    Location
+                  </h4>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 m-0">
+                    {personalInfo.location}
+                  </p>
                 </div>
               </div>
 
-              <div className="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-                <i className="bi bi-telephone flex-shrink-0"></i>
-                <div>
-                  <h3>Call Us</h3>
-                  <p>{data.contact?.phone || '+1 5589 55488 55'}</p>
+              {/* Email Card */}
+              <div className="contact-info-box">
+                <div className="contact-icon">
+                  <FaEnvelope />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 font-['Raleway'] mb-1">
+                    Email
+                  </h4>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                    <a
+                      href={`mailto:${personalInfo.email}`}
+                      className="text-sky-600 dark:text-sky-400 hover:underline"
+                    >
+                      {personalInfo.email}
+                    </a>
+                  </p>
+                  <button
+                    onClick={copyEmail}
+                    className="inline-flex items-center gap-1.5 text-xs py-1 px-2.5 rounded-md font-semibold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 hover:bg-sky-500 hover:text-white transition-all border border-sky-300 dark:border-sky-800"
+                  >
+                    {copied ? (
+                      <>
+                        <FaCheck className="text-green-500" /> <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaCopy /> <span>Copy Email</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
 
-              <div className="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                <i className="bi bi-envelope flex-shrink-0"></i>
+              {/* Phone Card */}
+              <div className="contact-info-box">
+                <div className="contact-icon">
+                  <FaPhoneAlt />
+                </div>
                 <div>
-                  <h3>Email Us</h3>
-                  <p>{data.contact?.email || 'info@example.com'}</p>
+                  <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 font-['Raleway'] mb-1">
+                    Call
+                  </h4>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 m-0">
+                    <a
+                      href={`tel:${personalInfo.phone}`}
+                      className="text-sky-600 dark:text-sky-400 hover:underline"
+                    >
+                      {personalInfo.phone}
+                    </a>
+                  </p>
                 </div>
               </div>
 
-              <iframe
-                src={
-                  data.contact?.mapEmbedUrl ||
-                  'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621'
-                }
-                frameBorder="0"
-                style={{ border: 0, width: '100%', height: '270px' }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Google Maps"
-              ></iframe>
+              {/* LinkedIn Card */}
+              <div className="contact-info-box">
+                <div className="contact-icon">
+                  <FaLinkedinIn />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 font-['Raleway'] mb-1">
+                    LinkedIn
+                  </h4>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 m-0">
+                    <a
+                      href={personalInfo.socialLinks.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sky-600 dark:text-sky-400 hover:underline"
+                    >
+                      Connect on LinkedIn →
+                    </a>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="col-lg-7">
-            <form onSubmit={handleSubmit} className="php-email-form" data-aos="fade-up" data-aos-delay="200">
-              <div className="row gy-4">
-                <div className="col-md-6">
-                  <label htmlFor="name-field" className="pb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name-field"
-                    className="form-control"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
+          <div className="lg:col-span-7">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="bg-white dark:bg-slate-800/90 p-8 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/80"
+            >
+              <h3 className="text-2xl font-bold mb-6 text-slate-800 dark:text-white font-['Raleway']">
+                Send a Message
+              </h3>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 font-['Poppins']">
+                      Your Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="e.g. John Doe"
+                      required
+                      className="w-full px-4 py-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 font-['Poppins']">
+                      Your Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="e.g. john@example.com"
+                      required
+                      className="w-full px-4 py-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all"
+                    />
+                  </div>
                 </div>
 
-                <div className="col-md-6">
-                  <label htmlFor="email-field" className="pb-2">
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    name="email"
-                    id="email-field"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="col-md-12">
-                  <label htmlFor="subject-field" className="pb-2">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 font-['Poppins']">
                     Subject
                   </label>
                   <input
                     type="text"
-                    className="form-control"
                     name="subject"
-                    id="subject-field"
                     value={formData.subject}
                     onChange={handleChange}
-                    required
+                    placeholder="e.g. Java Backend Engineer Opportunity"
+                    className="w-full px-4 py-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all"
                   />
                 </div>
 
-                <div className="col-md-12">
-                  <label htmlFor="message-field" className="pb-2">
-                    Message
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 font-['Poppins']">
+                    Message *
                   </label>
                   <textarea
-                    className="form-control"
                     name="message"
-                    rows="10"
-                    id="message-field"
+                    rows="5"
                     value={formData.message}
                     onChange={handleChange}
+                    placeholder="Write your message or project requirements here..."
                     required
-                  ></textarea>
+                    className="w-full px-4 py-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all resize-none"
+                  />
                 </div>
 
-                <div className="col-md-12 text-center">
-                  {status.state === 'loading' && <div className="loading d-block">Loading</div>}
-                  {status.state === 'error' && <div className="error-message d-block">{status.message}</div>}
-                  {status.state === 'success' && <div className="sent-message d-block">{status.message}</div>}
-
-                  <button type="submit">Send Message</button>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-full text-white font-semibold transition-all bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/30 hover:shadow-sky-500/50 hover:-translate-y-0.5 text-sm cursor-pointer"
+                  >
+                    <FaPaperPlane className="text-xs" />
+                    <span>Send Message</span>
+                  </button>
                 </div>
-              </div>
-            </form>
+
+                {status.state !== 'idle' && (
+                  <div
+                    className={`mt-4 p-3 rounded-lg text-xs font-medium text-center ${
+                      status.state === 'success'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                        : status.state === 'error'
+                        ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                        : 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300'
+                    }`}
+                  >
+                    {status.msg}
+                  </div>
+                )}
+              </form>
+            </motion.div>
           </div>
         </div>
       </div>
