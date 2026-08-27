@@ -1,8 +1,9 @@
 import React from 'react';
-import { personalInfo } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaLinkedinIn, FaGithub, FaBriefcase, FaEnvelope, FaHeart } from 'react-icons/fa';
 
 const Footer = () => {
+  const { personalInfo } = usePortfolio();
   return (
     <footer className="py-10 text-center bg-[#040b14] text-slate-400 border-t border-slate-800">
       <div className="max-w-6xl mx-auto px-6">

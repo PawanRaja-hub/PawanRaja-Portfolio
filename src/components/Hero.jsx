@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaArrowRight, FaDownload } from 'react-icons/fa';
 
 const roles = [
@@ -12,6 +12,7 @@ const roles = [
 ];
 
 const Hero = () => {
+  const { personalInfo } = usePortfolio();
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);

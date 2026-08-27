@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { services } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaServer, FaShieldAlt, FaBrain, FaDatabase, FaLayerGroup, FaCloud } from 'react-icons/fa';
 
 const iconMap = {
@@ -13,6 +13,7 @@ const iconMap = {
 };
 
 const Services = () => {
+  const { services = [] } = usePortfolio();
   return (
     <section id="services" className="services section section-bg">
       <div className="max-w-6xl mx-auto px-6 md:px-10">

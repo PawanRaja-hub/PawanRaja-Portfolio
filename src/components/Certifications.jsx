@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { certifications } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaAward, FaFileAlt, FaShieldAlt, FaExternalLinkAlt } from 'react-icons/fa';
 
 const iconMap = {
@@ -10,6 +10,7 @@ const iconMap = {
 };
 
 const Certifications = () => {
+  const { certifications = [] } = usePortfolio();
   return (
     <section id="certifications" className="certifications section section-bg">
       <div className="max-w-6xl mx-auto px-6 md:px-10">

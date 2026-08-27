@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { testimonials } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaQuoteLeft, FaStar } from 'react-icons/fa';
 
 const Testimonials = () => {
+  const { testimonials = [] } = usePortfolio();
   return (
     <section id="testimonials" className="testimonials section">
       <div className="max-w-6xl mx-auto px-6 md:px-10">

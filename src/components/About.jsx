@@ -1,12 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaChevronRight } from 'react-icons/fa';
 
 const About = () => {
+  const { personalInfo } = usePortfolio();
+
   const col1Facts = [
     { label: 'Experience', value: '2+ Years in Backend & Java' },
-    { label: 'Website', value: personalInfo.website, isLink: true },
+    { label: 'Website', value: personalInfo.website || 'https://pawanraja-portfolio.rajapawanvalila.workers.dev', isLink: true },
     { label: 'Phone', value: personalInfo.phone, link: `tel:${personalInfo.phone}` },
     { label: 'City', value: personalInfo.location },
   ];
@@ -15,7 +17,7 @@ const About = () => {
     { label: 'Role', value: personalInfo.title },
     { label: 'Degree', value: personalInfo.degree },
     { label: 'Email', value: personalInfo.email, link: `mailto:${personalInfo.email}` },
-    { label: 'Freelance', value: personalInfo.freelance },
+    { label: 'Freelance', value: personalInfo.freelance || 'Available' },
   ];
 
   return (

@@ -1,0 +1,18 @@
+name = "pawanraja-portfolio-cms"
+main = "worker/index.js"
+compatibility_date = "2024-09-23"
+
+# Cloudflare KV Namespace Binding
+# Create namespace with: npx wrangler kv namespace create PORTFOLIO_KV
+# Then replace the id below with your generated KV namespace ID.
+[[kv_namespaces]]
+binding = "PORTFOLIO_KV"
+id = "PORTFOLIO_KV_ID_REPLACE_ME"
+preview_id = "PORTFOLIO_KV_PREVIEW_ID_REPLACE_ME"
+
+[vars]
+ENVIRONMENT = "production"
+DEFAULT_CACHE_TTL = "15"
+
+# Admin password secret should be set with:
+# npx wrangler secret put ADMIN_PASSWORD

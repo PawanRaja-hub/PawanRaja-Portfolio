@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo, experience, education, certifications } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaDownload } from 'react-icons/fa';
 
 const Resume = () => {
+  const { personalInfo, experience, education, certifications } = usePortfolio();
   return (
     <section id="resume" className="resume section section-bg">
       <div className="max-w-6xl mx-auto px-6 md:px-10">

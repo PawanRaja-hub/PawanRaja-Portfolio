@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import {
   FaMapMarkerAlt,
   FaEnvelope,
@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 
 const Contact = () => {
+  const { personalInfo } = usePortfolio();
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState({ state: 'idle', msg: '' });

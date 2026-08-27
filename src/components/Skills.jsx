@@ -1,8 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { skills } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Skills = () => {
+  const { skills } = usePortfolio();
+  const backendSkills = skills?.backend || [];
+  const dbToolsSkills = skills?.databasesAndTools || [];
+
   return (
     <section id="skills" className="skills section">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
@@ -17,7 +21,7 @@ const Skills = () => {
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 mt-8">
           {/* Left Column: Backend & Architecture */}
           <div>
-            {skills.backend.map((skill, idx) => (
+            {backendSkills.map((skill, idx) => (
               <div key={skill.name} className="progress-wrap">
                 <div className="progress-title">
                   <span>{skill.name}</span>
@@ -38,7 +42,7 @@ const Skills = () => {
 
           {/* Right Column: Databases, Tools & Cloud */}
           <div>
-            {skills.databasesAndTools.map((skill, idx) => (
+            {dbToolsSkills.map((skill, idx) => (
               <div key={skill.name} className="progress-wrap">
                 <div className="progress-title">
                   <span>{skill.name}</span>

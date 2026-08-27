@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { personalInfo, navLinks } from '../constants';
+import { navLinks } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import {
   FaHome,
   FaUser,
@@ -30,6 +31,7 @@ const iconMap = {
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const { personalInfo } = usePortfolio();
   const [active, setActive] = useState('hero');
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {

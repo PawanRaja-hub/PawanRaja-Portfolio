@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { stats } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaSmile, FaServer, FaAward, FaCheckCircle } from 'react-icons/fa';
 
 const iconComponents = {
@@ -51,6 +51,7 @@ const Counter = ({ target, suffix }) => {
 };
 
 const Stats = () => {
+  const { stats } = usePortfolio();
   return (
     <section id="stats" className="section section-bg">
       <div className="max-w-6xl mx-auto px-6 md:px-10">

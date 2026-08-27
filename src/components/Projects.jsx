@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { projects } from '../constants';
+import { usePortfolio } from '../context/PortfolioContext';
 import { FaEye, FaGithub, FaExternalLinkAlt, FaTimes, FaLayerGroup, FaCheck } from 'react-icons/fa';
 
 const filterTabs = [
@@ -10,6 +10,7 @@ const filterTabs = [
 ];
 
 const Projects = () => {
+  const { projects = [] } = usePortfolio();
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeModal, setActiveModal] = useState(null);
 
