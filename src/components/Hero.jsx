@@ -1,137 +1,142 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../constants';
-import { FaDownload, FaEnvelope, FaArrowRight } from 'react-icons/fa';
 
-export const Hero = () => {
-  const [typingIndex, setTypingIndex] = useState(0);
+const roles = [
+  'Java Backend Engineer',
+  'Spring Boot Developer',
+  'AI Integrator',
+  'REST API Architect',
+  'Microservices Builder',
+];
+
+const Hero = () => {
+  const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const textArray = [
-    'AI-Native Java Backend Engineer',
-    'Backend Systems Architect',
-    'Spring Boot Specialist',
-    'AI Integrator',
-  ];
 
   useEffect(() => {
-    const current = textArray[typingIndex];
+    const current = roles[roleIndex];
     let timeout;
 
     if (!isDeleting && displayed === current) {
-      timeout = setTimeout(() => setIsDeleting(true), 2500);
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
     } else if (isDeleting && displayed === '') {
       timeout = setTimeout(() => {
         setIsDeleting(false);
-        setTypingIndex((prev) => (prev + 1) % textArray.length);
-      }, 400);
+        setRoleIndex((prev) => (prev + 1) % roles.length);
+      }, 500);
     } else if (isDeleting) {
       timeout = setTimeout(() => {
         setDisplayed((prev) => prev.slice(0, -1));
-      }, 60);
+      }, 50);
     } else {
       timeout = setTimeout(() => {
         setDisplayed((prev) => current.slice(0, prev.length + 1));
-      }, 120);
+      }, 100);
     }
 
     return () => clearTimeout(timeout);
-  }, [displayed, isDeleting, typingIndex]);
+  }, [displayed, isDeleting, roleIndex]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-blue-600/10" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)',
-        }}
-      />
-
-      <motion.div
-        className="absolute top-1/4 left-10 w-72 h-72 rounded-full bg-blue-500/10 blur-3xl"
-        animate={{ y: [0, 30, 0], x: [0, 20, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 right-10 w-96 h-96 rounded-full bg-blue-700/10 blur-3xl"
-        animate={{ y: [0, -30, 0], x: [0, -20, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+    <section
+      id="hero"
+      className="min-h-screen flex items-center justify-center relative"
+      style={{
+        background: 'linear-gradient(135deg, #f5f8fc 0%, #e8eef7 100%)',
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-8 py-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
-          <p className="text-blue-400 font-medium tracking-wider text-sm mb-4 uppercase">
-            Hello, I'm
-          </p>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 tracking-tight">
-            {personalInfo.name}
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4"
+            style={{
+              fontFamily: 'Raleway, sans-serif',
+              color: 'var(--heading-color)',
+              lineHeight: 1.2,
+            }}
+          >
+            Venkata Raja Pavan
+            <br />
+            <span style={{ color: 'var(--accent-color)' }}>Kumar Reddy Valila</span>
           </h1>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="h-16 sm:h-20 flex items-center justify-center mb-6"
-        >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold">
-            <span className="gradient-text">{displayed}</span>
-            <motion.span
-              className="inline-block w-0.5 h-8 sm:h-10 bg-blue-400 ml-1 align-middle"
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-          </h2>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-slate-300 text-lg max-w-3xl mx-auto mb-10 leading-relaxed"
-        >
-          {personalInfo.tagline}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
-          <a
-            href="#projects"
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5"
+          <p
+            className="text-xl md:text-2xl mt-4 font-medium"
+            style={{
+              fontFamily: 'Raleway, sans-serif',
+              color: 'var(--heading-color)',
+            }}
           >
-            View Projects
-            <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
+            I'm a <span style={{ color: 'var(--accent-color)' }}>{displayed}</span>
+            <span className="typed-cursor"></span>
+          </p>
 
-          <a
-            href={personalInfo.resumeUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 border border-blue-500/30 hover:border-blue-400 text-blue-300 hover:text-white font-semibold rounded-lg transition-all duration-300 hover:bg-blue-500/10"
+          <p
+            className="text-base md:text-lg mt-6 max-w-2xl"
+            style={{ color: 'var(--text-secondary)' }}
           >
-            <FaDownload className="w-4 h-4" />
-            Download Resume
-          </a>
+            Building scalable Java backend systems with Spring Boot while integrating AI into real-world applications.
+          </p>
 
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-8 py-4 text-slate-300 hover:text-white font-semibold rounded-lg transition-all duration-300"
-          >
-            <FaEnvelope className="w-4 h-4" />
-            Contact Me
-          </a>
+          <div className="flex flex-wrap gap-4 mt-8">
+            <a
+              href="#contact"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-white font-semibold transition-all"
+              style={{
+                background: 'var(--accent-color)',
+                fontFamily: 'Raleway, sans-serif',
+                fontSize: '15px',
+                boxShadow: '0 4px 15px rgba(5, 99, 187, 0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--accent-hover)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--accent-color)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Hire Me
+            </a>
+            <a
+              href="#projects"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold transition-all"
+              style={{
+                background: 'transparent',
+                color: 'var(--heading-color)',
+                border: '2px solid var(--accent-color)',
+                fontFamily: 'Raleway, sans-serif',
+                fontSize: '15px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--accent-color)';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'var(--heading-color)';
+              }}
+            >
+              View Portfolio
+            </a>
+          </div>
         </motion.div>
       </div>
+
+      {/* Background decorations */}
+      <div
+        className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-20"
+        style={{
+          background: 'radial-gradient(circle, var(--accent-color) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+      />
     </section>
   );
 };

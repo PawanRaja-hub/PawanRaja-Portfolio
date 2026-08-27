@@ -1,134 +1,143 @@
 import { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Stats from './components/Stats';
 import Skills from './components/Skills';
+import Resume from './components/Resume';
 import Projects from './components/Projects';
-import Experience from './components/Experience';
+import Services from './components/Services';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { personalInfo } from './constants';
-import { FaSun, FaMoon, FaDownload } from 'react-icons/fa';
-import { MdArrowUpward } from 'react-icons/md';
+import { FaBars } from 'react-icons/fa';
 
 function App() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved) return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'dark';
-  });
-  const [showTopBtn, setShowTopBtn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-  }
-  }, [theme]);
-
-  useEffect(() => {
     const handleScroll = () => {
-      setShowTopBtn(window.scrollY > 500);
-      const totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(Math.min(Math.max(progress, 0), 100));
+      const total = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
+      setScrollProgress(progress);
     };
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleTheme = () => {
-    setTheme((prev) => {
-      const newTheme = prev === 'dark' ? 'light' : 'dark';
-      try {
-        localStorage.setItem('theme', newTheme);
-      } catch (e) {
-        // Ignore
-      }
-      return newTheme;
-    });
-  };
+  // Close menu on link click
+  useEffect(() => {
+    const closeMenu = () => setMenuOpen(false);
+    const links = document.querySelectorAll('#nav-menu a');
+    links.forEach((link) => link.addEventListener('click', closeMenu));
+    return () => links.forEach((link) => link.removeEventListener('click', closeMenu));
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a20] text-white">
+    <div style={{ minHeight: '100vh' }}>
+      {/* Progress bar */}
       <div
-        className="fixed top-0 left-0 right-0 h-1 z-50 transition-all duration-150"
         style={{
-          background: `linear-gradient(to right, #3b82f6 ${scrollProgress}%, rgba(255,255,255,0.05) ${scrollProgress}%)`,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '3px',
+          background: 'var(--accent-color)',
+          width: `${scrollProgress}%`,
+          zIndex: 10002,
+          transition: 'width 0.1s ease',
         }}
       />
 
-      <nav className="fixed top-1 left-0 right-0 z-40 backdrop-blur-xl bg-[#0a0a20]/70 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <a href="#" className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
-              </div>
-              <span className="text-lg font-bold text-white hidden sm:block">Venkata Raja</span>
-            </a>
+      {/* Mobile hamburger */}
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        style={{
+          position: 'fixed',
+          top: '15px',
+          left: '15px',
+          zIndex: 10001,
+          background: 'var(--accent-color)',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          padding: '10px 12px',
+          cursor: 'pointer',
+          fontSize: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '4px',
+        }}
+        aria-label="Toggle menu"
+      >
+        {menuOpen ? (
+          <span style={{ fontSize: '20px', lineHeight: 1 }}>✕</span>
+        ) : (
+          <>
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
+            <span style={{ display: 'block', width: '20px', height: '2px', background: '#fff' }} />
+          </>
+        )}
+      </button>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#about" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">About</a>
-              <a href="#skills" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Skills</a>
-              <a href="#projects" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Projects</a>
-              <a href="#experience" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Experience</a>
-              <a href="#certifications" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Certifications</a>
-              <a href="#contact" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Contact</a>
-            </div>
+      {/* Overlay for mobile */}
+      {menuOpen && (
+        <div
+          onClick={() => setMenuOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 9996,
+          }}
+        />
+      )}
 
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-              </button>
+      {/* Sidebar */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: menuOpen ? 0 : '-300px',
+          bottom: 0,
+          width: '300px',
+          zIndex: 9997,
+          transition: 'left 0.3s ease',
+        }}
+        id="nav-menu"
+      >
+        <Sidebar />
+      </div>
 
-              <a
-                href={personalInfo.resumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white transition-all"
-              >
-                <FaDownload className="w-3.5 h-3.5" />
-                Resume
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main>
+      {/* Main content */}
+      <main
+        style={{
+          marginLeft: '300px',
+          minHeight: '100vh',
+          transition: 'margin-left 0.3s ease',
+        }}
+      >
         <Hero />
         <About />
+        <Stats />
         <Skills />
+        <Resume />
         <Projects />
-        <Experience />
+        <Services />
         <Certifications />
         <Contact />
+        <Footer />
       </main>
 
-      <Footer />
-
-      {showTopBtn && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/40 hover:scale-110 transition-all duration-300 z-40 flex items-center justify-center"
-          aria-label="Back to top"
-        >
-          <MdArrowUpward className="w-5 h-5" />
-        </button>
-      )}
+      <style>{`
+        @media (max-width: 1199px) {
+          main {
+            margin-left: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
