@@ -15,8 +15,8 @@ binding = "ASSETS"
 ENVIRONMENT = "production"
 DEFAULT_CACHE_TTL = "15"
 
-# Cloudflare KV Namespace Binding (Optional: uncomment once KV namespace is created)
-# [[kv_namespaces]]
-# binding = "PORTFOLIO_KV"
-# id = "<YOUR_PRODUCTION_KV_ID>"
+# Cloudflare KV Namespace Binding (Permanent)
+[[kv_namespaces]]
+binding = "PORTFOLIO_KV"
+id = "710d7cb3c63f48df8debf45a073677a0"
 
