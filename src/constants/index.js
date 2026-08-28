@@ -5,7 +5,7 @@ export const personalInfo = {
   "title": "AI-Native Java Backend Engineer",
   "tagline": "Building scalable Java backend systems with Spring Boot while integrating AI into real-world applications.",
   "email": "rajapawanvalila@gmail.com",
-  "phone": "+91 81066 48761",
+  "phone": "+91 81066 48762",
   "location": "Pune, Maharashtra, India",
   "birthDate": "15 August 2001",
   "age": "24",
