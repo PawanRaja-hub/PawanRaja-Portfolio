@@ -469,7 +469,7 @@ export default {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            message: `chore(cms): sync portfolio content from Admin CMS (${new Date().toLocaleDateString()}) [skip ci]`,
+            message: `chore(cms): sync portfolio content from Admin CMS (${new Date().toLocaleDateString()})`,
             content: base64Content,
             sha: currentSha,
           }),
