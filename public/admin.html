@@ -402,11 +402,11 @@
         <span>Settings</span>
       </button>
 
-      <!-- View Live Portfolio -->
-      <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Open Live Portfolio Website">
-        <i class="bi bi-box-arrow-up-right"></i>
-        <span>View Live Site</span>
-      </a>
+      <!-- Logout / Switch Password Button -->
+      <button class="btn btn-secondary btn-sm" onclick="handleLogout()" title="Switch or re-enter Admin Password">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+      </button>
 
       <!-- Save Button -->
       <button class="btn btn-primary" id="saveAllBtn" onclick="savePortfolioData()">
@@ -1010,6 +1010,11 @@
           body: JSON.stringify(dataToSave)
         });
 
+        if (res.status === 401) {
+          handleLogout(true);
+          return;
+        }
+
         const result = await res.json();
         if (result.success) {
           showToast('Published Globally!', 'Cloudflare KV updated in milliseconds.');
@@ -1028,6 +1033,18 @@
       } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill"></i> Publish Changes';
+      }
+    }
+
+    function handleLogout(isSessionExpired = false) {
+      localStorage.removeItem('portfolio_cms_token');
+      adminToken = '';
+      document.getElementById('adminPasswordInput').value = '';
+      document.getElementById('loginModal').classList.add('active');
+      if (isSessionExpired) {
+        showToast('Session Expired', 'Please enter your current admin password.', 'error');
+      } else {
+        showToast('Logged Out', 'Please log in with your admin password.', 'info');
       }
     }
 
