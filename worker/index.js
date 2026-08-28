@@ -322,7 +322,9 @@ export default {
       }
 
       return jsonResponse(data, 200, {
-        "Cache-Control": "public, max-age=15, s-maxage=30, stale-while-revalidate=60",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
       });
     }
 

@@ -36,19 +36,11 @@ export const PortfolioProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchPortfolioData = useCallback(async (force = false) => {
-    // Check TTL cache unless forced
-    if (!force) {
-      const lastFetch = localStorage.getItem(CACHE_TIME_KEY);
-      if (lastFetch && Date.now() - parseInt(lastFetch, 10) < CACHE_TTL_MS) {
-        return;
-      }
-    }
-
+  const fetchPortfolioData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/portfolio', {
-        headers: { 'Accept': 'application/json' },
+      const res = await fetch(`/api/portfolio?t=${Date.now()}`, {
+        headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
       });
 
       if (!res.ok) {
@@ -63,16 +55,37 @@ export const PortfolioProvider = ({ children }) => {
         setError(null);
       }
     } catch (err) {
-      // Graceful fallback to existing state / bundled constants
-      console.info('Headless CMS API endpoint offline; using bundled portfolio constants.', err.message);
-      setError(err.message);
+      console.warn('PortfolioContext: Falling back to local/cached constants', err);
+      setError(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    // 1. Initial live fetch on mount
     fetchPortfolioData();
+
+    // 2. Refetch whenever user returns to tab (e.g. after editing in Admin dashboard)
+    const onFocus = () => fetchPortfolioData();
+    window.addEventListener('focus', onFocus);
+
+    // 3. Listen to local storage changes across tabs
+    const onStorage = (e) => {
+      if (e.key === 'portfolio_data_backup' && e.newValue) {
+        try {
+          setData(JSON.parse(e.newValue));
+        } catch (err) {
+          // ignore
+        }
+      }
+    };
+    window.addEventListener('storage', onStorage);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('storage', onStorage);
+    };
   }, [fetchPortfolioData]);
 
   const value = {
