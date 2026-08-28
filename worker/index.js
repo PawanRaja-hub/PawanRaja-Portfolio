@@ -387,17 +387,121 @@ export default {
       }
     }
 
-    // 6. Route: GET /api/health
+    // 6. Route: POST /api/github/sync (Sync & Commit updated data to GitHub repository)
+    if (url.pathname === "/api/github/sync" && method === "POST") {
+      if (!verifyAuth(request, env)) {
+        return jsonResponse({ success: false, error: "Unauthorized: Invalid credentials" }, 401);
+      }
+
+      try {
+        const body = await request.json();
+        const githubToken = body.githubToken || env.GITHUB_TOKEN;
+        const repoOwner = body.repoOwner || env.GITHUB_OWNER || "PawanRaja-hub";
+        const repoName = body.repoName || env.GITHUB_REPO || "PawanRaja-Portfolio";
+        const targetPath = body.filePath || "src/constants/index.js";
+        const data = body.data;
+
+        if (!githubToken) {
+          return jsonResponse({
+            success: false,
+            error: "GitHub Token missing. Please provide a GitHub Personal Access Token in CMS Settings or set GITHUB_TOKEN in Worker secrets.",
+          }, 400);
+        }
+
+        // Generate clean ES Module JS file content
+        const generatedJsContent = `export const personalInfo = ${JSON.stringify(data.personalInfo || {}, null, 2)};\n\n` +
+          `export const stats = ${JSON.stringify(data.stats || [], null, 2)};\n\n` +
+          `export const skills = ${JSON.stringify(data.skills || {}, null, 2)};\n\n` +
+          `export const projects = ${JSON.stringify(data.projects || [], null, 2)};\n\n` +
+          `export const services = ${JSON.stringify(data.services || [], null, 2)};\n\n` +
+          `export const experience = ${JSON.stringify(data.experience || [], null, 2)};\n\n` +
+          `export const education = ${JSON.stringify(data.education || [], null, 2)};\n\n` +
+          `export const certifications = ${JSON.stringify(data.certifications || [], null, 2)};\n\n` +
+          `export const testimonials = ${JSON.stringify(data.testimonials || [], null, 2)};\n\n` +
+          `export const navLinks = [\n` +
+          `  { id: 'hero', icon: 'house', label: 'Home' },\n` +
+          `  { id: 'about', icon: 'person', label: 'About' },\n` +
+          `  { id: 'resume', icon: 'file-earmark-text', label: 'Resume' },\n` +
+          `  { id: 'portfolio', icon: 'images', label: 'Portfolio' },\n` +
+          `  { id: 'services', icon: 'hdd-stack', label: 'Services' },\n` +
+          `  { id: 'testimonials', icon: 'chat-quote', label: 'Testimonials' },\n` +
+          `  { id: 'certifications', icon: 'award', label: 'Certifications' },\n` +
+          `  { id: 'contact', icon: 'envelope', label: 'Contact' },\n` +
+          `];\n\n` +
+          `export const seoConfig = {\n` +
+          `  title: '${data.personalInfo?.name || "Portfolio"} | ${data.personalInfo?.title || "Engineer"}',\n` +
+          `  description: '${data.personalInfo?.tagline || ""}',\n` +
+          `  url: '${data.personalInfo?.website || ""}',\n` +
+          `  image: '${data.personalInfo?.photo || "/pawan-photo.jpg"}',\n` +
+          `  siteName: '${data.personalInfo?.name || "Portfolio"}',\n` +
+          `};\n`;
+
+        // 1. Fetch current file SHA from GitHub
+        const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${targetPath}`;
+        const getRes = await fetch(getUrl, {
+          headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: "application/vnd.github+json",
+            "User-Agent": "PawanRaja-Portfolio-CMS",
+          },
+        });
+
+        let currentSha = undefined;
+        if (getRes.ok) {
+          const fileInfo = await getRes.json();
+          currentSha = fileInfo.sha;
+        }
+
+        // 2. Commit update to GitHub
+        const utf8Bytes = new TextEncoder().encode(generatedJsContent);
+        let binaryStr = "";
+        for (let i = 0; i < utf8Bytes.length; i++) {
+          binaryStr += String.fromCharCode(utf8Bytes[i]);
+        }
+        const base64Content = btoa(binaryStr);
+
+        const putRes = await fetch(getUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: "application/vnd.github+json",
+            "User-Agent": "PawanRaja-Portfolio-CMS",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `chore(cms): sync portfolio content from Admin CMS (${new Date().toLocaleDateString()}) [skip ci]`,
+            content: base64Content,
+            sha: currentSha,
+          }),
+        });
+
+        if (!putRes.ok) {
+          const errorJson = await putRes.json();
+          return jsonResponse({ success: false, error: errorJson.message || "GitHub API update failed" }, putRes.status);
+        }
+
+        const commitResult = await putRes.json();
+        return jsonResponse({
+          success: true,
+          message: "Synced and committed directly to GitHub repository!",
+          commit: commitResult.commit?.html_url || "",
+        });
+      } catch (err) {
+        return jsonResponse({ success: false, error: err.message }, 500);
+      }
+    }
+
+    // 7. Route: GET /api/health
     if (url.pathname === "/api/health") {
       return jsonResponse({ status: "healthy", timestamp: new Date().toISOString(), kvReady: !!env.PORTFOLIO_KV });
     }
 
-    // 7. Route: Redirect /admin to admin dashboard
+    // 8. Route: Redirect /admin to admin dashboard
     if (url.pathname === "/admin") {
       return Response.redirect(`${url.origin}/admin.html`, 302);
     }
 
-    // 8. Serve Static Assets (React app, admin.html, images, CSS, JS)
+    // 9. Serve Static Assets (React app, admin.html, images, CSS, JS)
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
     }

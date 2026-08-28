@@ -390,10 +390,16 @@
         <span id="connectionStatusText">Ready</span>
       </span>
 
+      <!-- GitHub Sync Button -->
+      <button class="btn btn-secondary btn-sm" id="githubSyncBtn" onclick="syncWithGitHub()" title="Sync and commit directly to GitHub repository">
+        <i class="bi bi-github"></i>
+        <span>Sync to GitHub</span>
+      </button>
+
       <!-- Settings / Config Button -->
-      <button class="btn btn-secondary btn-sm" onclick="openSettingsModal()" title="API Endpoint Settings">
+      <button class="btn btn-secondary btn-sm" onclick="openSettingsModal()" title="API Endpoint & GitHub Settings">
         <i class="bi bi-gear-fill"></i>
-        <span>API Settings</span>
+        <span>Settings</span>
       </button>
 
       <!-- View Live Portfolio -->
@@ -436,17 +442,56 @@
 
   <!-- Settings Modal -->
   <div class="modal-backdrop" id="settingsModal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 540px;">
       <div class="card-header" style="padding-bottom: 10px; margin-bottom: 16px;">
-        <h4 style="color:#fff; font-size: 18px;">API &amp; KV Settings</h4>
+        <h4 style="color:#fff; font-size: 18px; display:flex; align-items:center; gap:8px;">
+          <i class="bi bi-sliders"></i>
+          <span>API &amp; GitHub Sync Settings</span>
+        </h4>
         <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()"><i class="bi bi-x"></i></button>
       </div>
+
       <div class="form-group" style="margin-bottom: 14px;">
         <label>Backend API Base URL</label>
         <input type="text" id="apiEndpointInput" placeholder="e.g. /api/portfolio or https://worker.workers.dev" />
         <span style="font-size: 11px; color: var(--text-muted);">Default: <code class="mono">/api/portfolio</code></span>
       </div>
-      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+
+      <div style="margin: 16px 0; padding-top: 14px; border-top: 1px solid var(--card-border);">
+        <h5 style="color: #fff; font-size: 14px; margin-bottom: 10px; display:flex; align-items:center; gap:6px;">
+          <i class="bi bi-github"></i>
+          <span>GitHub 3-Way Auto-Sync</span>
+        </h5>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Keep your GitHub repository, Cloudflare KV, and live portfolio 100% in sync automatically on every publish.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>GitHub Personal Access Token (PAT)</label>
+          <input type="password" id="githubTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+          <span style="font-size: 11px; color: var(--text-muted);">Token needs <code class="mono">repo</code> or <code class="mono">contents:write</code> scope. Stored locally in your browser.</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div class="form-group">
+            <label>Repo Owner</label>
+            <input type="text" id="githubOwnerInput" value="PawanRaja-hub" />
+          </div>
+          <div class="form-group">
+            <label>Repo Name</label>
+            <input type="text" id="githubRepoInput" value="PawanRaja-Portfolio" />
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+          <input type="checkbox" id="autoSyncGithubCheckbox" style="width:16px; height:16px;" checked />
+          <label for="autoSyncGithubCheckbox" style="text-transform:none; font-size:12px; cursor:pointer; margin:0; color:#fff;">
+            Auto-commit changes to GitHub repository on every Publish
+          </label>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
         <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">Cancel</button>
         <button class="btn btn-primary btn-sm" onclick="saveSettings()">Save Configuration</button>
       </div>
@@ -777,6 +822,10 @@
     // Initialize CMS
     window.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('apiEndpointInput').value = apiBaseUrl;
+      document.getElementById('githubTokenInput').value = localStorage.getItem('portfolio_github_token') || '';
+      document.getElementById('githubOwnerInput').value = localStorage.getItem('portfolio_github_owner') || 'PawanRaja-hub';
+      document.getElementById('githubRepoInput').value = localStorage.getItem('portfolio_github_repo') || 'PawanRaja-Portfolio';
+      document.getElementById('autoSyncGithubCheckbox').checked = localStorage.getItem('portfolio_github_autosync') !== 'false';
 
       // Check authentication
       if (!adminToken) {
@@ -964,6 +1013,13 @@
         const result = await res.json();
         if (result.success) {
           showToast('Published Globally!', 'Cloudflare KV updated in milliseconds.');
+          
+          // Auto-sync with GitHub if enabled & token present
+          const hasGithubToken = (document.getElementById('githubTokenInput').value.trim() || localStorage.getItem('portfolio_github_token'));
+          const isAutoSync = document.getElementById('autoSyncGithubCheckbox').checked;
+          if (hasGithubToken && isAutoSync) {
+            syncWithGitHub(dataToSave);
+          }
         } else {
           showToast('Save Failed', result.error || 'Server error', 'error');
         }
@@ -972,6 +1028,62 @@
       } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill"></i> Publish Changes';
+      }
+    }
+
+    async function syncWithGitHub(customData) {
+      const syncBtn = document.getElementById('githubSyncBtn');
+      const token = document.getElementById('githubTokenInput').value.trim() || localStorage.getItem('portfolio_github_token');
+      const owner = document.getElementById('githubOwnerInput').value.trim() || localStorage.getItem('portfolio_github_owner') || 'PawanRaja-hub';
+      const repo = document.getElementById('githubRepoInput').value.trim() || localStorage.getItem('portfolio_github_repo') || 'PawanRaja-Portfolio';
+
+      if (!token) {
+        showToast('GitHub Token Needed', 'Open Settings to enter your GitHub Personal Access Token.', 'info');
+        openSettingsModal();
+        return;
+      }
+
+      if (syncBtn) {
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Syncing to GitHub...';
+      }
+
+      const payload = customData || collectAllFormData();
+
+      try {
+        const syncUrl = apiBaseUrl.includes('/api/portfolio')
+          ? apiBaseUrl.replace('/api/portfolio', '/api/github/sync')
+          : `${apiBaseUrl}/api/github/sync`;
+
+        const res = await fetch(syncUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`,
+            'X-Admin-Password': adminToken
+          },
+          body: JSON.stringify({
+            githubToken: token,
+            repoOwner: owner,
+            repoName: repo,
+            filePath: 'src/constants/index.js',
+            data: payload
+          })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          showToast('GitHub 100% Synced!', 'Auto-committed updated content to GitHub repository.');
+        } else {
+          showToast('GitHub Sync Failed', result.error || 'Check PAT token permissions', 'error');
+        }
+      } catch (err) {
+        showToast('Sync Error', err.message, 'error');
+      } finally {
+        if (syncBtn) {
+          syncBtn.disabled = false;
+          syncBtn.innerHTML = '<i class="bi bi-github"></i> Sync to GitHub';
+        }
       }
     }
 
@@ -1392,13 +1504,23 @@
     }
     function saveSettings() {
       const newUrl = document.getElementById('apiEndpointInput').value.trim();
+      const githubToken = document.getElementById('githubTokenInput').value.trim();
+      const githubOwner = document.getElementById('githubOwnerInput').value.trim();
+      const githubRepo = document.getElementById('githubRepoInput').value.trim();
+      const autoSync = document.getElementById('autoSyncGithubCheckbox').checked;
+
       if (newUrl) {
         apiBaseUrl = newUrl;
         localStorage.setItem('portfolio_cms_api', newUrl);
-        showToast('Settings Updated', `API Endpoint set to ${newUrl}`);
-        closeSettingsModal();
-        loadPortfolioData();
       }
+      localStorage.setItem('portfolio_github_token', githubToken);
+      localStorage.setItem('portfolio_github_owner', githubOwner || 'PawanRaja-hub');
+      localStorage.setItem('portfolio_github_repo', githubRepo || 'PawanRaja-Portfolio');
+      localStorage.setItem('portfolio_github_autosync', autoSync);
+
+      showToast('Settings Saved', 'API endpoint & GitHub sync settings updated');
+      closeSettingsModal();
+      loadPortfolioData();
     }
   </script>
 </body>
