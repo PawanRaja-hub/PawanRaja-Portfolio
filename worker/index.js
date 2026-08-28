@@ -16,7 +16,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     title: "AI-Native Java Backend Engineer",
     tagline: "Building scalable Java backend systems with Spring Boot while integrating AI into real-world applications.",
     email: "rajapawanvalila@gmail.com",
-    phone: "+91 98765 43210",
+    phone: "+91 81066 48761",
     location: "Pune, Maharashtra, India",
     birthDate: "15 August 2001",
     age: "24",
@@ -482,10 +482,15 @@ export default {
           return jsonResponse({ success: false, error: errorJson.message || "GitHub API update failed" }, putRes.status);
         }
 
+        // Also update Cloudflare KV immediately so KV is 100% in sync with GitHub
+        if (env.PORTFOLIO_KV && data) {
+          await env.PORTFOLIO_KV.put("portfolio_data", JSON.stringify(data));
+        }
+
         const commitResult = await putRes.json();
         return jsonResponse({
           success: true,
-          message: "Synced and committed directly to GitHub repository!",
+          message: "Synced to Cloudflare KV & committed to GitHub repository!",
           commit: commitResult.commit?.html_url || "",
         });
       } catch (err) {
