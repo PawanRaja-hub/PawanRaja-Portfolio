@@ -268,8 +268,8 @@ export const education = [
     "id": 1,
     "degree": "Bachelor of Technology (B.Tech)",
     "field": "Computer Science & Engineering",
-    "institution": "University / Engineering College",
-    "period": "2020 - 2024",
+    "institution": "JNTUA College of Engineering Anantapur",
+    "period": "2019 - 2023",
     "description": "Graduated with strong foundation in algorithms, data structures, object-oriented design, database management systems, and modern software engineering principles."
   }
 ];
@@ -279,7 +279,7 @@ export const certifications = [
     "id": 1,
     "name": "Claude Certified Architect – Foundations",
     "issuer": "Anthropic",
-    "year": "2024",
+    "year": "2026",
     "icon": "award",
     "badge": "AI Architecture"
   },
